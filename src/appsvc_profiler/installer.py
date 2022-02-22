@@ -1,8 +1,9 @@
 from pathlib import Path
+from .helpers import SignalHelper, is_like_true
 from .constants import CodeProfilerConstants as constants
 import logging
 import os 
-from .helpers import SignalHelper, is_like_true
+
 
 LOG_LEVEL = logging.DEBUG
 class CodeProfilerInstaller:    
@@ -61,7 +62,7 @@ class CodeProfilerInstaller:
     
     def _should_profiler_be_enabled(self):
         code_profiler_enabled_app_setting_value = os.getenv(constants.APP_SETTING_TO_ENABLE_CODE_PROFILER, None)
-        code_profiler_enabled = code_profiler_enabled_app_setting_value is not None and  is_like_true(code_profiler_enabled_app_setting_value)
+        code_profiler_enabled = code_profiler_enabled_app_setting_value is None or is_like_true(code_profiler_enabled_app_setting_value)
         self.logger.debug(f"{constants.APP_SETTING_TO_ENABLE_CODE_PROFILER} : {code_profiler_enabled_app_setting_value}")
                     
         if not code_profiler_enabled:
