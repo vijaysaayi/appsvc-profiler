@@ -14,4 +14,9 @@ class CodeProfilerConstants():
     
     PID_FILE_LOCATION = f"{CODE_PROFILER_LOGS_DIR}/master_process.pid"
     WEBSITE_HOSTNAME_ENV_NAME = "WEBSITE_INSTANCE_ID"  
-    
+
+class CodeProfilerExitCodes:
+    Success=0    
+    Limitation=1
+    Disabled=2
+    SignalHandlersNotInitialized=3 
