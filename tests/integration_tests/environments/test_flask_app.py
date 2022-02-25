@@ -5,8 +5,9 @@ from appsvc_profiler.main import is_signal_handlers_initialized_based_on_statusf
 from simple_flask_app.app import create_app
 from appsvc_profiler.helpers import SignalHelper
 from appsvc_profiler.installer import CodeProfilerInstaller
-from appsvc_profiler.constants import CodeProfilerConstants as constants
+from appsvc_profiler.constants import CodeProfilerConstants
 
+constants = CodeProfilerConstants()
 def handler():
     print("This is a test handler")
 

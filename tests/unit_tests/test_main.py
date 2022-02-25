@@ -1,13 +1,14 @@
 import os
 import pytest
 from appsvc_profiler import main, is_code_profiler_disabled, is_signal_handlers_initialized_based_on_statusfile_value
-from appsvc_profiler.constants import CodeProfilerConstants as constants
+from appsvc_profiler.constants import CodeProfilerConstants
 from appsvc_profiler.installer import CodeProfilerInstaller
 from click.testing import CliRunner
 
 import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+constants = CodeProfilerConstants()
 
 def test_no_arguments_provided():
     runner = CliRunner()
@@ -19,8 +20,7 @@ def test_attach_argument_provided_profiler_not_enabled():
     runner = CliRunner()
     os.environ[constants.APP_SETTING_TO_ENABLE_CODE_PROFILER]=str(False)
     result = runner.invoke(main,["--attach","10"])
-    assert "To enable code profiler, add/update the App Setting " in result.output
-    assert result.exit_code == 0
+    assert result.exit_code == 1
     
     #cleanup
     remove_appsetting(constants.APP_SETTING_TO_ENABLE_CODE_PROFILER)
