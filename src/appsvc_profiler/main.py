@@ -3,13 +3,12 @@ import click
 import logging
 import os
 
-from .constants import CodeProfilerConstants as constants
-from .constants import CodeProfilerExitCodes
+from .constants import CodeProfilerConstants , CodeProfilerExitCodes
 from .helpers import is_like_false, check_if_process_is_running
 from pathlib import Path
 from .profiler import CodeProfiler
 
-
+constants = CodeProfilerConstants()
 def ensure_logs_dir_is_created():
     try:
         Path(constants.CODE_PROFILER_LOGS_DIR).mkdir(parents=True, exist_ok=True)
@@ -19,12 +18,18 @@ def ensure_logs_dir_is_created():
 def initialize_logger():
     instance_id = os.environ.get(constants.INSTANCE_ID_ENV_NAME, "default")
     instance_id = instance_id[:4]
-    logging.basicConfig(filename=f"{constants.CODE_PROFILER_LOGS_DIR}/{instance_id}_debug.log",
-                        filemode='a',
-                        format='[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
-                        datefmt="%Y_%m_%d_%H_%M_%S",
-                        level=logging.DEBUG)
-    return logging.getLogger()
+    # Explicitly setting logger name so that root logger of the application is not modified
+    logger = logging.getLogger("appsvc_profiler")
+    logger.setLevel(logging.DEBUG)
+    
+    fh = logging.FileHandler(f"{constants.CODE_PROFILER_LOGS_DIR}/{instance_id}_debug.log")
+    fh.setLevel(logging.DEBUG)
+    
+    formatter = logging.Formatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',datefmt="%Y_%m_%d_%H_%M_%S")
+    fh.setFormatter(formatter)
+    
+    logger.addHandler(fh)
+    return logger
 
 ensure_logs_dir_is_created()
 logger = initialize_logger()

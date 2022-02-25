@@ -4,7 +4,7 @@ import subprocess
 import string
 import sys
 
-from .constants import CodeProfilerConstants as constants
+from .constants import CodeProfilerConstants
 from datetime import datetime, timezone
 from time import sleep
 from os import path, rename, environ
@@ -13,7 +13,8 @@ from textwrap import wrap
 from rich.console import Console
 
 console = Console()
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
+constants = CodeProfilerConstants()
 
 WAIT_FOR_VIZTRACER_TO_SAVE_TRACE_TIMEOUT=environ.get(constants.APP_SETTING_TO_SET_SAVE_TRACE_MAX_TIMEOUT, 60)
 WAIT_FOR_VIZTRACER_TO_SAVE_TRACE_MAX_TIMEOUT=180
@@ -80,15 +81,15 @@ class CodeProfiler():
     def save_traces(self):
         with console.status("[bold green] Saving the profiler traces") as status:            
             if self.output_filename == "":
-               self.output_filename=self._get_new_file_name()
+               self.output_filename= f"{constants.CODE_PROFILER_LOGS_DIR}/{self._get_new_file_name()}"
                 
             log_info(f"- The traces would be saved with the filename - {self.output_filename}")
             self._wait_for_viztracer_to_save_traces()
             # renaming the file only if the name is different from constants.CODE_PROFILER_TRACE_FILENAME
             if self.output_filename != constants.CODE_PROFILER_TRACE_FILENAME:
                 if path.exists(constants.CODE_PROFILER_TRACE_NAME):
-                    # rename /home/LogFiles/CodeProfiler/profiler_trace.json to /home/LogFiles/CodeProfiler/<timestamp>_instanceid_profiler_trace.json
-                    rename(constants.CODE_PROFILER_TRACE_NAME , f"{constants.CODE_PROFILER_LOGS_DIR}/{self.output_filename}")
+                    # rename /home/LogFiles/CodeProfiler/profiler_trace.json to /exithome/LogFiles/CodeProfiler/<timestamp>_instanceid_profiler_trace.json
+                    rename(constants.CODE_PROFILER_TRACE_NAME , f"{self.output_filename}")
                 else:
                     log_info(f"- Unable to save the trace by the name {self.output_filename}")
             

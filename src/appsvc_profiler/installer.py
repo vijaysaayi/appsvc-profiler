@@ -1,16 +1,17 @@
 from pathlib import Path
 from .helpers import SignalHelper, is_like_true
-from .constants import CodeProfilerConstants as constants
+from .constants import CodeProfilerConstants
 import logging
 import os 
 
-
+constants = CodeProfilerConstants()
 LOG_LEVEL = logging.DEBUG
 class CodeProfilerInstaller:    
     def __init__(self):
         self.is_profiler_enabled = False
         self._ensure_logs_dir_is_created(constants.CODE_PROFILER_LOGS_DIR)
-        self.logger = logging.getLogger(__name__)
+        # Explicitly setting logger name so that root logger of the application is not modified
+        self.logger = logging.getLogger("appsvc_profiler.installer")
         self.logger.setLevel(LOG_LEVEL)
         self.logger.info("Code Profiler Installer is starting up")  
         
