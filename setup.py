@@ -8,7 +8,8 @@ setup(
     package_dir={"": "src"},
     install_requires=[
         'click',
-        'rich'
+        'rich',
+        'psutil'
     ],
     entry_points={
         "console_scripts": [
