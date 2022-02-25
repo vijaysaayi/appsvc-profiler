@@ -1,8 +1,10 @@
 
-from .constants import CodeProfilerConstants as constants
+from .constants import CodeProfilerConstants
 import signal
 import logging
 import psutil
+
+constants = CodeProfilerConstants()
 
 def is_like_true(value):
     return (str(value) == "1"
