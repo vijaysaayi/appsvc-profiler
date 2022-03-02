@@ -3,6 +3,7 @@ import random
 import subprocess 
 import string
 import sys
+import shutil
 
 from .constants import CodeProfilerConstants
 from datetime import datetime, timezone
@@ -52,7 +53,7 @@ class CodeProfiler():
     def _rename_default_trace_file_name(self):
         random_name = get_random_string()
         new_filename= f"{constants.CODE_PROFILER_TRACE_NAME}_{random_name}.backup"        
-        rename(constants.CODE_PROFILER_TRACE_NAME, new_filename)
+        shutil.move(constants.CODE_PROFILER_TRACE_NAME, new_filename)
         log_info(f"- Successfully renamed the file to {new_filename}")
     
     def _collect_traces(self):        
@@ -78,20 +79,34 @@ class CodeProfiler():
         
         return f"{now}_{instance_id}_{constants.CODE_PROFILER_TRACE_FILENAME}"        
     
+    # This test results in false positive result when path to directory is specified (e.g. /tmp )
+    def _looks_like_absolute_path(self, filename):
+        return filename.startswith("/")
+    
+    def _get_output_file_path(self):
+        output_filepath = self.output_filename
+        if self.output_filename == "":
+               output_filepath = self._get_new_file_name()
+            
+        if not self._looks_like_absolute_path(output_filepath):                    
+            output_filepath = f"{constants.CODE_PROFILER_LOGS_DIR}/{output_filepath}"
+
+        # returning 
+        return output_filepath
+    
     def save_traces(self):
         with console.status("[bold green] Saving the profiler traces") as status:            
-            if self.output_filename == "":
-               self.output_filename= f"{constants.CODE_PROFILER_LOGS_DIR}/{self._get_new_file_name()}"
+            output_file_path = self._get_output_file_path()
                 
-            log_info(f"- The traces would be saved with the filename - {self.output_filename}")
+            log_info(f"- The traces would be saved with the filename - {output_file_path}")
             self._wait_for_viztracer_to_save_traces()
             # renaming the file only if the name is different from constants.CODE_PROFILER_TRACE_FILENAME
             if self.output_filename != constants.CODE_PROFILER_TRACE_FILENAME:
                 if path.exists(constants.CODE_PROFILER_TRACE_NAME):
-                    # rename /home/LogFiles/CodeProfiler/profiler_trace.json to /exithome/LogFiles/CodeProfiler/<timestamp>_instanceid_profiler_trace.json
-                    rename(constants.CODE_PROFILER_TRACE_NAME , f"{self.output_filename}")
+                    # move /home/LogFiles/CodeProfiler/profiler_trace.json to /exithome/LogFiles/CodeProfiler/<timestamp>_instanceid_profiler_trace.json
+                    shutil.move(constants.CODE_PROFILER_TRACE_NAME , f"{output_file_path}")
                 else:
-                    log_info(f"- Unable to save the trace by the name {self.output_filename}")
+                    log_info(f"- Unable to save the trace by the name {output_file_path}")
             
     def _wait_for_viztracer_to_save_traces(self):
         log_info(f"- Waiting for profiler trace to be saved. This operation will timeout in {WAIT_FOR_VIZTRACER_TO_SAVE_TRACE_TIMEOUT} seconds")
