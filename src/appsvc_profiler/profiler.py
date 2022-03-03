@@ -69,12 +69,9 @@ class CodeProfiler():
     
     def _get_new_file_name(self):
         now = datetime.now(timezone.utc).strftime("%Y_%m_%d_%H_%M_%S")
-        instance_id = environ.get(constants.INSTANCE_ID_ENV_NAME, None)
-        if instance_id is None:
-            instance_id="default"
-        # Considering only first 4 digits of instance id.
+        # Considering only first 6 digits of instance id.
         # This helps us to correlate with date in Applens
-        instance_id=instance_id[0:4] 
+        instance_id=constants.INSTANCE_ID_TRIMMED
         
         return f"{now}_{instance_id}_{constants.CODE_PROFILER_TRACE_FILENAME}"        
     
