@@ -31,7 +31,7 @@ class CodeProfilerConstants():
     
     @property
     def CODE_PROFILER_TRACE_NAME(self):
-        return f"{self.CODE_PROFILER_LOGS_DIR}/{self.CODE_PROFILER_TRACE_FILENAME}"    
+        return f"{self.CODE_PROFILER_LOGS_DIR}/{self.INSTANCE_ID_TRIMMED}_{self.CODE_PROFILER_TRACE_FILENAME}"    
     
     GUNICORN_LOGFILE_SIGNAL_HANDLER_INFO = "Worker.handle_usr1 of <gunicorn.workers.sync.SyncWorker object"
     INSTANCE_ID_ENV_NAME = "WEBSITE_INSTANCE_ID"
