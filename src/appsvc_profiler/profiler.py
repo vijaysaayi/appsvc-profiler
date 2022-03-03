@@ -8,7 +8,7 @@ import shutil
 from .constants import CodeProfilerConstants
 from datetime import datetime, timezone
 from time import sleep
-from os import path, rename, environ
+from os import makedirs, path, rename, environ
 from pathlib import Path
 from textwrap import wrap
 from rich.console import Console
@@ -91,16 +91,24 @@ class CodeProfiler():
         # returning 
         return output_filepath
     
+    def _create_directory_if_not_exists(self, filepath):
+        directory_name = path.dirname(filepath) 
+        try:
+            makedirs(directory_name, exist_ok=True)
+        except Exception as e:
+            log_info(f"Unable to create directory '{directory_name}' due to {e}")
+    
     def save_traces(self):
         with console.status("[bold green] Saving the profiler traces") as status:            
-            output_file_path = self._get_output_file_path()
+            output_file_path = self._get_output_file_path()            
+            self._create_directory_if_not_exists(output_file_path)
                 
             log_info(f"- The traces would be saved with the filename - {output_file_path}")
             self._wait_for_viztracer_to_save_traces()
             # renaming the file only if the name is different from constants.CODE_PROFILER_TRACE_FILENAME
             if self.output_filename != constants.CODE_PROFILER_TRACE_FILENAME:
                 if path.exists(constants.CODE_PROFILER_TRACE_NAME):
-                    # move /home/LogFiles/CodeProfiler/profiler_trace.json to /exithome/LogFiles/CodeProfiler/<timestamp>_instanceid_profiler_trace.json
+                    # move /home/LogFiles/CodeProfiler/instance_id_profiler_trace.json to /exithome/LogFiles/CodeProfiler/<timestamp>_instanceid_profiler_trace.json
                     shutil.move(constants.CODE_PROFILER_TRACE_NAME , f"{output_file_path}")
                 else:
                     log_info(f"- Unable to save the trace by the name {output_file_path}")
