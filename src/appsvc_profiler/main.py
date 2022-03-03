@@ -16,8 +16,7 @@ def ensure_logs_dir_is_created():
         print(e)
 
 def initialize_logger():
-    instance_id = os.environ.get(constants.INSTANCE_ID_ENV_NAME, "default")
-    instance_id = instance_id[:4]
+    instance_id = constants.INSTANCE_ID_TRIMMED
     # Explicitly setting logger name so that root logger of the application is not modified
     logger = logging.getLogger("appsvc_profiler")
     logger.setLevel(logging.DEBUG)

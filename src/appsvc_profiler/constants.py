@@ -37,10 +37,13 @@ class CodeProfilerConstants():
     INSTANCE_ID_ENV_NAME = "WEBSITE_INSTANCE_ID"
     
     @property
-    def PID_FILE_LOCATION(self):
+    def INSTANCE_ID_TRIMMED(self):
         instance_id = os.getenv(self.INSTANCE_ID_ENV_NAME,"default")
-        instance_id = instance_id[:4]
-        return f"{self.CODE_PROFILER_LOGS_DIR}/{instance_id}_master_process.pid"
+        return instance_id[:6]
+    
+    @property
+    def PID_FILE_LOCATION(self):
+        return f"{self.CODE_PROFILER_LOGS_DIR}/{self.INSTANCE_ID_TRIMMED}_master_process.pid"
     
     WEBSITE_HOSTNAME_ENV_NAME = "WEBSITE_HOSTNAME"  
     LOCAL_DEVELOP_ENV_NAME = "APPSVC_PROFILER_USE_LOCAL_DEVELOPMENT"
