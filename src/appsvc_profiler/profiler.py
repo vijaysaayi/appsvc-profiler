@@ -83,7 +83,7 @@ class CodeProfiler():
     def _get_output_file_path(self):
         output_filepath = self.output_filename
         if self.output_filename == "":
-               output_filepath = self._get_new_file_name()
+            output_filepath = self._get_new_file_name()
             
         if not self._looks_like_absolute_path(output_filepath):                    
             output_filepath = f"{constants.CODE_PROFILER_LOGS_DIR}/{output_filepath}"
@@ -108,7 +108,7 @@ class CodeProfiler():
             # renaming the file only if the name is different from constants.CODE_PROFILER_TRACE_FILENAME
             if self.output_filename != constants.CODE_PROFILER_TRACE_FILENAME:
                 if path.exists(constants.CODE_PROFILER_TRACE_NAME):
-                    # move /home/LogFiles/CodeProfiler/instance_id_profiler_trace.json to /exithome/LogFiles/CodeProfiler/<timestamp>_instanceid_profiler_trace.json
+                    # move /tmp/instance_id_profiler_trace.json to /home/LogFiles/CodeProfiler/<timestamp>_instanceid_profiler_trace.json
                     shutil.move(constants.CODE_PROFILER_TRACE_NAME , f"{output_file_path}")
                 else:
                     log_info(f"- Unable to save the trace by the name {output_file_path}")

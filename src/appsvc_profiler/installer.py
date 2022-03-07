@@ -42,6 +42,7 @@ class CodeProfilerInstaller:
                                    plugins=['vizplugins.cpu_usage','vizplugins.memory_usage'], 
                                    max_stack_depth=20)
                 self.logger.info("Attempting to install the default code profiler.")
+                self.logger.debug(f"viztracer would save traces to {constants.CODE_PROFILER_TRACE_NAME}")
                 tracer.install()
                 self.logger.info("Successfully installed code profiler.")
                 self._set_signal_handler_initialized_status(True)
